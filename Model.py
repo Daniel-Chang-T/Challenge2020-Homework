@@ -89,8 +89,10 @@ class GameEngine:
                 self.update_menu()
             elif cur_state == Const.STATE_PLAY:
                 self.update_objects()
-
+                
                 self.timer -= 1
+                if self.check_caught() == 1 :
+                    self.update_endgame()
                 if self.timer == 0:
                     self.ev_manager.post(EventTimesUp())
             elif cur_state == Const.STATE_ENDGAME:
@@ -133,6 +135,13 @@ class GameEngine:
         '''
         pass
 
+    def check_caught(self):
+        delta = self.players[0].position - self.players[1].position
+        distance = delta * delta
+        if distance <= Const.PLAYER_RADIUS * 2 :
+            return 1
+    def switch(self):
+        self.players[0].speed , self.players[1].speed  = self.players[1].speed , self.players[0].speed 
     def run(self):
         '''
         The main loop of the game is in this function.

@@ -40,7 +40,7 @@ class GraphicalView:
             self.initialize()
 
         elif isinstance(event, EventEveryTick):
-            self.display_fps()
+            self.display_fps_and_time()
 
             cur_state = self.model.state_machine.peek()
             if cur_state == Const.STATE_MENU: self.render_menu()
@@ -48,11 +48,11 @@ class GraphicalView:
             elif cur_state == Const.STATE_STOP: self.render_stop()
             elif cur_state == Const.STATE_ENDGAME: self.render_endgame()
 
-    def display_fps(self):
+    def display_fps_and_time(self):
         '''
         Display the current fps on the window caption.
         '''
-        pg.display.set_caption(f'{Const.WINDOW_CAPTION} - FPS: {self.model.clock.get_fps():.2f}')
+        pg.display.set_caption(f'{Const.WINDOW_CAPTION} - FPS: {self.model.clock.get_fps():.2f}   time left: {self.model.timer/60:.2f}')
 
     def render_menu(self):
         # draw background
@@ -78,7 +78,16 @@ class GraphicalView:
         pg.display.flip()
 
     def render_stop(self):
-        pass
+        # draw background
+        self.screen.fill(Const.BACKGROUND_COLOR)
+
+        # draw text
+        font = pg.font.Font(None, 36)
+        text_surface = font.render("Press [space] to continue ...", 1, pg.Color('gray88'))
+        text_center = (Const.ARENA_SIZE[0] / 2, Const.ARENA_SIZE[1] / 2)
+        self.screen.blit(text_surface, text_surface.get_rect(center=text_center))
+
+        pg.display.flip()
 
     def render_endgame(self):
         # draw background
